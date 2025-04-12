@@ -17,9 +17,10 @@ public class LibraryManagementSystemTest {
 
     //Library Class Specification Based Testing
     Library library;
-    Book book;
-    Member member;
+    Book book, book1, book2;
+    Member member, member1;
 
+    //This will create testing values for the library class to use
     @BeforeEach
     public void setUp() {
         library = new Library();
@@ -27,22 +28,26 @@ public class LibraryManagementSystemTest {
         member = new Member("Test User", "test@example.com", 1);
     }
 
+    //This test will test the class adding a book to the library and then checking if it is avaiable
     @Test
     public void testAddBookAndCheckAvailability() {
         library.addBook(book);
         assertTrue(library.bookAvailability(1));
     }
 
+    //this class will add a member to the library then check if the member is in the library system
+    //Then it will also test the revoke membership function
     @Test
     public void testAddAndRevokeMember() {
         library.addMember(member);
-        assertEquals(1, library.getAllMembers().size());
+        assertEquals(2, library.getAllMembers().size());
         library.revokeMembership(1);
-        assertEquals(0, library.getAllMembers().size());
+        assertEquals(1, library.getAllMembers().size());
     }
 
+    //This test will test the checking out of books, the avaiability of a book when it is check out and the return book function
     @Test
-    public void testCheckoutAndReturnBook() {
+    public void testCheckoutAndReturnBook1() {
         library.addBook(book);
         library.addMember(member);
         library.checkoutBook(1, 1);
@@ -56,6 +61,7 @@ public class LibraryManagementSystemTest {
         assertTrue(member.getBorrowedBookList().isEmpty());
     }
 
+//this will test the searching of books ID by searching its name
     @Test
     public void testFindBookIdByName() {
         library.addBook(book);
@@ -63,6 +69,7 @@ public class LibraryManagementSystemTest {
         assertEquals(-1, library.findBookIdByName("Nonexistent"));
     }
 
+    //This will make sure when you check who has a book checked out is under the correct person
     @Test
     public void testWhoHasBook() {
         library.addBook(book);
@@ -71,6 +78,44 @@ public class LibraryManagementSystemTest {
         assertEquals("Test User", library.whoHasBook(1));
     }
 
+    //This will do more setup for my second phase of tests to reach higher coverage
+    @BeforeEach
+    void setup() {
+        library = new Library();
+        book1 = new Book("Title One", "Author A", 2001, "ISBN1", 1, "Fiction");
+        book2 = new Book("Title Two", "Author B", 2002, "ISBN2", 2, "Nonfiction");
+        member1 = new Member("Alice", "alice@example.com", 101);
+
+        library.addBook(book1);
+        library.addBook(book2);
+        library.addMember(member1);
+    }
+
+    //this test checks for removing a nonexistant book
+    @Test
+    void testRemoveNonexistentBook() {
+        library.removeBook(999); // Should not throw
+    }
+
+
+    //this will check for removing a non existant member
+    @Test
+    void testRevokeNonexistentMember() {
+        library.revokeMembership(999); // Should not throw
+    }
+
+    //this test will try and add a duplicate book and member to the library system
+    @Test
+    void testDuplicateAddBookAndMember() {
+        Book duplicateBook = new Book("Duplicate", "Someone", 2020, "ISBN3", 1, "Drama");
+        library.addBook(duplicateBook);
+        library.addBook(duplicateBook);
+        assertEquals("Duplicate", library.AllBooksInLibrary.get(1).Name);
+        Member duplicateMember = new Member("Duplicate", "someone@example.com", 102);
+        library.addMember(duplicateMember);
+        library.addMember(duplicateMember);
+        assertEquals("Duplicate", library.MemberIDs.get(102).Name);
+    }
     //Library Class Property based testing
 //    @Provide
 //    Arbitrary<Book> books() {
