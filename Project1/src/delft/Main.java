@@ -48,6 +48,25 @@ class Book {
         Genre = genre;
     }
 
+    // Getters
+    public String getName() { return Name; }
+    public String getAuthor() { return Author; }
+    public int getYear() { return Year; }
+    public String getIsbn() { return ISBN; }
+    public String getGenre() { return Genre; }
+    public int getBookId() { return BookID; }
+    public boolean isAvailable() { return IsAvailable; }
+
+    // Setters
+    public void setName(String name) { this.Name = name; }
+    public void setAuthor(String author) { this.Author = author; }
+    public void setYear(int year) { this.Year = year; }
+    public void setIsbn(String isbn) { this.ISBN = isbn; }
+    public void setGenre(String genre) { this.Genre = genre; }
+    public void setBookId(int bookId) { this.BookID = bookId; }
+    public void setAvailability(boolean available) { IsAvailable = available; }
+
+
     // returns  book information
     public String getBookInfo() {
         return "[" + BookID + "] " + Name + " by " + Author + ", " + Year + ", Genre: " + Genre +
