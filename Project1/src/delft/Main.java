@@ -3,7 +3,7 @@ package delft;
 import java.util.*;
 
 /*
- * delft.Library Management System
+ * Library Management System
  * Simulates a basic library system with functionality to manage books and members.
  *
  *
@@ -18,7 +18,7 @@ public class Main {
 }
 
 
-// delft.Book class where you can see and access the book info
+// Book class where you can see and access the book info
 class Book {
     String Name, Author, ISBN, Genre;
     int Year, BookID;
@@ -55,7 +55,7 @@ class Book {
     }
 }
 
-// delft.Member class where you can access and see member info
+// Member class where you can access and see member info
 class Member {
     String Name, Email;
     int MemberID;
@@ -95,7 +95,7 @@ class Member {
     }
 }
 
-// delft.Library class where you can find the books and member access is
+// Library class where you can find the books and member access is
 class Library {
     Map<Integer, Book> AllBooksInLibrary = new HashMap<>();
     Map<Integer, Book> LoanedBooks = new HashMap<>();
@@ -111,7 +111,7 @@ class Library {
     // removes a book from the library
     public void removeBook(int bookID) {
         if (!AllBooksInLibrary.containsKey(bookID)) {
-            System.out.println("delft.Book ID not found.");
+            System.out.println("Book ID not found.");
             return;
         }
 
@@ -124,48 +124,48 @@ class Library {
     // updates the book's availability status and adds it to the member's borrowed list
     public void checkoutBook(int bookID, int memberID) {
         if (!AllBooksInLibrary.containsKey(bookID)) {
-            System.out.println("delft.Book ID not found in library.");
+            System.out.println("Book ID not found in library.");
             return;
         }
         if (!MemberIDs.containsKey(memberID)) {
-            System.out.println("delft.Member ID not found.");
+            System.out.println("Member ID not found.");
             return;
         }
         Book book = AllBooksInLibrary.get(bookID);
         Member member = MemberIDs.get(memberID);
         if (!book.IsAvailable) {
-            System.out.println("delft.Book is already checked out.");
+            System.out.println("Book is already checked out.");
             return;
         }
         book.IsAvailable = false;
         AvailableBookIds.remove(bookID);
         LoanedBooks.put(bookID, book);
         member.addBorrowedBook(bookID);
-        System.out.println("delft.Book checked out successfully.");
+        System.out.println("Book checked out successfully.");
     }
 
     // returns a book from a member
     // updates the book's availability status and removes it from the member's borrowed list
     public void returnBook(int bookID, int memberID) {
         if (!AllBooksInLibrary.containsKey(bookID)) {
-            System.out.println("delft.Book ID not found in library.");
+            System.out.println("Book ID not found in library.");
             return;
         }
         if (!MemberIDs.containsKey(memberID)) {
-            System.out.println("delft.Member ID not found.");
+            System.out.println("Member ID not found.");
             return;
         }
         Book book = AllBooksInLibrary.get(bookID);
         Member member = MemberIDs.get(memberID);
         if (book.IsAvailable) {
-            System.out.println("delft.Book is already returned.");
+            System.out.println("Book is already returned.");
             return;
         }
         book.IsAvailable = true;
         AvailableBookIds.add(bookID);
         LoanedBooks.remove(bookID);
         member.removeBorrowedBook(bookID);
-        System.out.println("delft.Book returned successfully.");
+        System.out.println("Book returned successfully.");
     }
 
     // adds a member to the library
@@ -215,10 +215,10 @@ class Interface {
 
         while (true) {
             try {
-                System.out.println("\n--- delft.Main Menu ---");
-                System.out.println("1. delft.Library");
-                System.out.println("2. delft.Book");
-                System.out.println("3. delft.Member");
+                System.out.println("\n--- Main Menu ---");
+                System.out.println("1. Library");
+                System.out.println("2. Book");
+                System.out.println("3. Member");
                 System.out.println("4. Exit");
                 System.out.print("Select a category: ");
 
@@ -250,18 +250,18 @@ class Interface {
 
     private static void handleLibraryOptions(Scanner scanner, Library library) {
         while (true) {
-            System.out.println("\n--- delft.Library Options ---");
-            System.out.println("1. Add delft.Book");
-            System.out.println("2. Remove delft.Book");
-            System.out.println("3. Add delft.Member");
+            System.out.println("\n--- Library Options ---");
+            System.out.println("1. Add Book");
+            System.out.println("2. Remove Book");
+            System.out.println("3. Add Member");
             System.out.println("4. Revoke Membership");
-            System.out.println("5. Checkout delft.Book");
-            System.out.println("6. Return delft.Book");
-            System.out.println("7. Check delft.Book Availability");
-            System.out.println("8. Who Has delft.Book");
+            System.out.println("5. Checkout Book");
+            System.out.println("6. Return Book");
+            System.out.println("7. Check Book Availability");
+            System.out.println("8. Who Has Book");
             System.out.println("9. Get All Members");
-            System.out.println("10. Find delft.Book ID by Name");
-            System.out.println("0. Return to delft.Main Menu");
+            System.out.println("10. Find Book ID by Name");
+            System.out.println("0. Return to Main Menu");
             System.out.print("Select an option: ");
 
             int libChoice = scanner.nextInt();
@@ -273,7 +273,7 @@ class Interface {
 
             switch (libChoice) {
                 case 1: // add book
-                    System.out.print("delft.Book name: ");
+                    System.out.print("Book name: ");
                     String name = scanner.nextLine();
                     System.out.print("Author: ");
                     String author = scanner.nextLine();
@@ -282,7 +282,7 @@ class Interface {
                     scanner.nextLine();
                     System.out.print("ISBN: ");
                     String isbn = scanner.nextLine();
-                    System.out.print("delft.Book ID: ");
+                    System.out.print("Book ID: ");
                     int bookID = Integer.parseInt(scanner.nextLine());
                     System.out.print("Genre: ");
                     String genre = scanner.nextLine();
@@ -290,54 +290,54 @@ class Interface {
                     library.addBook(book);
                     break;
                 case 2: // remove book
-                    System.out.print("Enter delft.Book ID to remove: ");
+                    System.out.print("Enter Book ID to remove: ");
                     int removeID = Integer.parseInt(scanner.nextLine());
                     library.removeBook(removeID);
                     break;
                 case 3: // add member
-                    System.out.print("delft.Member name: ");
+                    System.out.print("Member name: ");
                     String memberName = scanner.nextLine();
                     System.out.print("Email: ");
                     String email = scanner.nextLine();
                     int memberID;
                     while (true) {
-                        System.out.print("delft.Member ID: ");
+                        System.out.print("Member ID: ");
                         try {
                             memberID = Integer.parseInt(scanner.nextLine());
                             break;
                         } catch (NumberFormatException e) {
-                            System.out.println("Invalid delft.Member ID. Please enter a valid integer.");
+                            System.out.println("Invalid Member ID. Please enter a valid integer.");
                         }
                     }
                     Member newMember = new Member(memberName, email, memberID);
                     library.addMember(newMember);
                     break;
                 case 4: // revoke membership
-                    System.out.print("Enter delft.Member ID to revoke: ");
+                    System.out.print("Enter Member ID to revoke: ");
                     int revokeID = Integer.parseInt(scanner.nextLine());
                     library.revokeMembership(revokeID);
                     break;
                 case 5: // checkout book
-                    System.out.print("delft.Book ID to checkout: ");
+                    System.out.print("Book ID to checkout: ");
                     int checkoutBookID = Integer.parseInt(scanner.nextLine());
-                    System.out.print("delft.Member ID: ");
+                    System.out.print("Member ID: ");
                     int checkoutMemberID = Integer.parseInt(scanner.nextLine());
                     library.checkoutBook(checkoutBookID, checkoutMemberID);
                     break;
                 case 6: // return book
-                    System.out.print("delft.Book ID to return: ");
+                    System.out.print("Book ID to return: ");
                     int returnBookID = Integer.parseInt(scanner.nextLine());
-                    System.out.print("delft.Member ID: ");
+                    System.out.print("Member ID: ");
                     int checkinMemberID = Integer.parseInt(scanner.nextLine());
                     library.returnBook(returnBookID, checkinMemberID);
                     break;
                 case 7: // check book availability
-                    System.out.print("Enter delft.Book ID to check availability: ");
+                    System.out.print("Enter Book ID to check availability: ");
                     int availID = Integer.parseInt(scanner.nextLine());
                     System.out.println("Available: " + library.bookAvailability(availID));
                     break;
                 case 8: // who has book
-                    System.out.print("Enter delft.Book ID to check who has it: ");
+                    System.out.print("Enter Book ID to check who has it: ");
                     int whoID = Integer.parseInt(scanner.nextLine());
                     System.out.println("Checked out by: " + library.whoHasBook(whoID));
                     break;
@@ -348,9 +348,9 @@ class Interface {
                     }
                     break;
                 case 10: // find book ID by name
-                    System.out.print("Enter delft.Book Name: ");
+                    System.out.print("Enter Book Name: ");
                     String bookName = scanner.nextLine();
-                    System.out.println("delft.Book ID: " + library.findBookIdByName(bookName));
+                    System.out.println("Book ID: " + library.findBookIdByName(bookName));
                     break;
                 default:
                     System.out.println("Invalid option.");
@@ -360,11 +360,11 @@ class Interface {
 
     private static void handleBookOptions(Scanner scanner, Library library) {
         while (true) {
-            System.out.println("\n--- delft.Book Options ---");
+            System.out.println("\n--- Book Options ---");
             System.out.println("1. Check Availability");
-            System.out.println("2. Update delft.Book Info");
-            System.out.println("3. Get delft.Book Info");
-            System.out.println("0. Return to delft.Main Menu");
+            System.out.println("2. Update Book Info");
+            System.out.println("3. Get Book Info");
+            System.out.println("0. Return to Main Menu");
             System.out.print("Select an option: ");
 
             int bookChoice = scanner.nextInt();
@@ -376,17 +376,17 @@ class Interface {
 
             switch (bookChoice) {
                 case 1: // check availability
-                    System.out.print("Enter delft.Book ID: ");
+                    System.out.print("Enter Book ID: ");
                     int bID = Integer.parseInt(scanner.nextLine());
                     Book b1 = library.AllBooksInLibrary.get(bID);
                     if (b1 != null) {
                         System.out.println("Available: " + b1.checkAvailability());
                     } else {
-                        System.out.println("delft.Book not found.");
+                        System.out.println("Book not found.");
                     }
                     break;
                 case 2: // update book info
-                    System.out.print("Enter delft.Book ID: ");
+                    System.out.print("Enter Book ID: ");
                     int ubID = Integer.parseInt(scanner.nextLine());
                     Book b2 = library.AllBooksInLibrary.get(ubID);
                     if (b2 != null) {
@@ -403,17 +403,17 @@ class Interface {
                         b2.Genre = scanner.nextLine();
                         b2.updateBookInfo(b2.Name, b2.Author, b2.Year, b2.ISBN, b2.Genre);
                     } else {
-                        System.out.println("delft.Book not found.");
+                        System.out.println("Book not found.");
                     }
                     break;
                 case 3: // get book info
-                    System.out.print("Enter delft.Book ID: ");
+                    System.out.print("Enter Book ID: ");
                     int gID = Integer.parseInt(scanner.nextLine());
                     Book b3 = library.AllBooksInLibrary.get(gID);
                     if (b3 != null) {
                         System.out.println(b3.getBookInfo());
                     } else {
-                        System.out.println("delft.Book not found.");
+                        System.out.println("Book not found.");
                     }
                     break;
                 default:
@@ -424,13 +424,13 @@ class Interface {
 
     private static void handleMemberOptions(Scanner scanner, Library library) {
         while (true) {
-            System.out.println("\n--- delft.Member Options ---");
-            System.out.println("1. Print delft.Member Info");
-            System.out.println("2. Get Borrowed delft.Book List");
-            System.out.println("3. Add Borrowed delft.Book");
-            System.out.println("4. Remove Borrowed delft.Book");
-            System.out.println("5. Update delft.Member Info");
-            System.out.println("0. Return to delft.Main Menu");
+            System.out.println("\n--- Member Options ---");
+            System.out.println("1. Print Member Info");
+            System.out.println("2. Get Borrowed Book List");
+            System.out.println("3. Add Borrowed Book");
+            System.out.println("4. Remove Borrowed Book");
+            System.out.println("5. Update Member Info");
+            System.out.println("0. Return to Main Menu");
             System.out.print("Select an option: ");
 
             int memChoice = scanner.nextInt();
@@ -440,12 +440,12 @@ class Interface {
                 return;
             }
 
-            System.out.print("Enter delft.Member ID: ");
+            System.out.print("Enter Member ID: ");
             int memberId = Integer.parseInt(scanner.nextLine());
             Member member = library.MemberIDs.get(memberId);
 
             if (member == null) {
-                System.out.println("delft.Member not found.");
+                System.out.println("Member not found.");
                 continue;
             }
 
@@ -457,12 +457,12 @@ class Interface {
                     System.out.println("Borrowed Books: " + member.getBorrowedBookList());
                     break;
                 case 3: // add borrowed book
-                    System.out.print("Enter delft.Book ID to add: ");
+                    System.out.print("Enter Book ID to add: ");
                     int addBookID = Integer.parseInt(scanner.nextLine());
                     member.addBorrowedBook(addBookID);
                     break;
                 case 4: // remove borrowed book
-                    System.out.print("Enter delft.Book ID to remove: ");
+                    System.out.print("Enter Book ID to remove: ");
                     int removeBookID = Integer.parseInt(scanner.nextLine());
                     member.removeBorrowedBook(removeBookID);
                     break;
