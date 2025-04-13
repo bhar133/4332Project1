@@ -22,92 +22,68 @@ import static org.junit.jupiter.api.Assertions.*;
         public void setUp() {
             availableBook = new Book("Hamlin", "Amy Charish", 2016, "12345", 65, "Fantasy");
             unavailableBook = new Book("Hamlin", "Amy Charish", 2016, "12345", 65, "Fantasy");
-            unavailableBook.setAvailability(false);
+            unavailableBook.IsAvailable = false;
         }
 
-        // Tests for Core Functionality
+        // returns true when book is availible
         @Test
-        public void checkAvailability_returnsTrue_whenBookIsAvailable() {
+        public void checkAvailabilityIsTrue() {
             assertTrue(availableBook.checkAvailability());
         }
-
+        // returns false when book is checked out
         @Test
-        public void checkAvailability_returnsFalse_whenBookIsNotAvailable() {
+        public void checkAvailabilityIsFalse() {
             assertFalse(unavailableBook.checkAvailability());
         }
 
-        @Test
-        public void getBookInfo_showsCorrectFormatForAvailableBook() {
-            assertEquals(availableBook.getBookInfo(),"[65] Hamlin by Amy Charish, 2016, Genre: Fantasy (Available)");
-        }
-
-        @Test
-        public void getBookInfo_showsCorrectFormatForUnavailableBook() {
-            assertEquals(unavailableBook.getBookInfo(),"[65] Hamlin by Amy Charish, 2016, Genre: Fantasy (Checked Out)");
-        }
-
-        @Test
-        public void updateBookInfo_updatesAllFieldsCorrectly() {
-            Book book = new Book("OldName", "OldAuthor", 2000, "OldISBN", 1, "OldGenre");
-            book.updateBookInfo("NewName", "NewAuthor", 2023, "NewISBN", "NewGenre");
-
-            assertEquals("NewName", book.getName());
-            assertEquals("NewAuthor", book.getAuthor());
-            assertEquals(2023, book.getYear());
-            assertEquals("NewISBN", book.getIsbn());
-            assertEquals("NewGenre", book.getGenre());
-        }
-        Book book = new Book("Default", "Author", 2000, "ISBN", 1, "Genre");
-
-        // Tests for Getters/Setters
+        //adds books, uses getBookInfo , and verfies correct info is retrived
         @Property
-        void allStringPropertiesRoundtrip(
-
-                @ForAll @StringLength(min = 1, max = 100) String name,
-                @ForAll @StringLength(min = 1, max = 100) String author,
-                @ForAll @StringLength(min = 1, max = 20) String isbn,
-                @ForAll @StringLength(min = 1, max = 50) String genre) {
-
-            book.setName(name);
-            book.setAuthor(author);
-            book.setIsbn(isbn);
-            book.setGenre(genre);
-
-            assertAll(
-                    () -> assertEquals(name, book.getName()),
-                    () -> assertEquals(author, book.getAuthor()),
-                    () -> assertEquals(isbn, book.getIsbn()),
-                    () -> assertEquals(genre, book.getGenre())
-            );
-        }
-
-        @Property
-        void numericPropertiesRoundtrip(
+        void getBookInfoTest(
+                @ForAll @StringLength(min = 1, max = 50) String title,
+                @ForAll @StringLength(min = 1, max = 50) String author,
                 @ForAll @IntRange(min = 0, max = 3000) int year,
-                @ForAll @Positive int bookId) {
+                @ForAll @StringLength(min = 1, max = 20) String isbn,
+                @ForAll @StringLength(min = 1, max = 30) String genre,
+                @ForAll int bookId,
+                @ForAll boolean available) {
 
-            book.setYear(year);
-            book.setBookId(bookId);
+            Book book = new Book(title, author, year, isbn, bookId, genre);
+            book.IsAvailable = available;
+
+            String info = book.getBookInfo();
+
+            // Verify the pattern matches
+            assertEquals(info,String.format("[%d] %s by %s, %d, Genre: %s (%s)",
+                    bookId,
+                    title,
+                    author,
+                    year,
+                    genre,
+                    available ? "Available" : "Checked Out"));
+
+
+        }
+
+        //updates book info with new info and verifies new info
+        @Property
+        void updateBookInfoTest(
+                @ForAll @StringLength(min = 1) String newName,
+                @ForAll @StringLength(min = 1) String newAuthor,
+                @ForAll @IntRange(min = -3000, max = 3000) int newYear,
+                @ForAll @StringLength(min = 1) String newIsbn,
+                @ForAll @StringLength(min = 1) String newGenre) {
+
+            Book book = new Book("Old", "Old", 0, "Old", 1, "Old");
+            book.updateBookInfo(newName, newAuthor, newYear, newIsbn, newGenre);
 
             assertAll(
-                    () -> assertEquals(year, book.getYear()),
-                    () -> assertEquals(bookId, book.getBookId())
+                    () -> assertEquals(newName, book.Name),
+                    () -> assertEquals(newAuthor, book.Author),
+                    () -> assertEquals(newYear, book.Year),
+                    () -> assertEquals(newIsbn, book.ISBN),
+                    () -> assertEquals(newGenre, book.Genre)
             );
         }
 
-        @Test
-        public void isAvailable_returnsCorrectStatus() {
-            assertTrue(availableBook.isAvailable());
-            assertFalse(unavailableBook.isAvailable());
-        }
-
-        @Test
-        public void setAvailable_updatesStatusCorrectly() {
-            availableBook.setAvailability(false);
-            assertFalse(availableBook.isAvailable());
-
-            unavailableBook.setAvailability(true);
-            assertTrue(unavailableBook.isAvailable());
-        }
     }
 
