@@ -4,9 +4,9 @@ import org.junit.jupiter.api.*;
 
 import java.util.*;
 import java.util.stream.*;
-//import net.jqwik.api.*;
-//import net.jqwik.api.arbitraries.*;
-//import net.jqwik.api.constraints.*;
+import net.jqwik.api.*;
+import net.jqwik.api.arbitraries.*;
+import net.jqwik.api.constraints.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
     public class BookTest {
         private Book availableBook;
         private Book unavailableBook;
+
 
         @BeforeEach
         public void setUp() {
@@ -56,73 +57,42 @@ import static org.junit.jupiter.api.Assertions.*;
             assertEquals("NewISBN", book.getIsbn());
             assertEquals("NewGenre", book.getGenre());
         }
+        Book book = new Book("Default", "Author", 2000, "ISBN", 1, "Genre");
 
         // Tests for Getters/Setters
-        @Test
-        public void getName_returnsCorrectName() {
-            assertEquals("Hamlin", availableBook.getName());
+        @Property
+        void allStringPropertiesRoundtrip(
+
+                @ForAll @StringLength(min = 1, max = 100) String name,
+                @ForAll @StringLength(min = 1, max = 100) String author,
+                @ForAll @StringLength(min = 1, max = 20) String isbn,
+                @ForAll @StringLength(min = 1, max = 50) String genre) {
+
+            book.setName(name);
+            book.setAuthor(author);
+            book.setIsbn(isbn);
+            book.setGenre(genre);
+
+            assertAll(
+                    () -> assertEquals(name, book.getName()),
+                    () -> assertEquals(author, book.getAuthor()),
+                    () -> assertEquals(isbn, book.getIsbn()),
+                    () -> assertEquals(genre, book.getGenre())
+            );
         }
 
-        @Test
-        public void setName_updatesNameCorrectly() {
-            availableBook.setName("New Title");
-            assertEquals("New Title", availableBook.getName());
-        }
+        @Property
+        void numericPropertiesRoundtrip(
+                @ForAll @IntRange(min = 0, max = 3000) int year,
+                @ForAll @Positive int bookId) {
 
-        @Test
-        public void getAuthor_returnsCorrectAuthor() {
-            assertEquals("Amy Charish", availableBook.getAuthor());
-        }
+            book.setYear(year);
+            book.setBookId(bookId);
 
-        @Test
-        public void setAuthor_updatesAuthorCorrectly() {
-            availableBook.setAuthor("New Author");
-            assertEquals("New Author", availableBook.getAuthor());
-        }
-
-        @Test
-        public void getIsbn_returnsCorrectIsbn() {
-            assertEquals("12345", availableBook.getIsbn());
-        }
-
-        @Test
-        public void setIsbn_updatesIsbnCorrectly() {
-            availableBook.setIsbn("00000");
-            assertEquals("00000", availableBook.getIsbn());
-        }
-
-        @Test
-        public void getGenre_returnsCorrectGenre() {
-            assertEquals("Fantasy", availableBook.getGenre());
-        }
-
-        @Test
-        public void setGenre_updatesGenreCorrectly() {
-            availableBook.setGenre("NonFiction");
-            assertEquals("NonFiction", availableBook.getGenre());
-        }
-
-        @Test
-        public void getID_returnsCorrectID() {
-            assertEquals(65,availableBook.getBookId());
-        }
-
-        @Test
-        public void setID_updatesIDCorrectly() {
-            availableBook.setBookId(0);
-            assertEquals(0, availableBook.getBookId());
-        }
-
-
-        @Test
-        public void getYear_returnsCorrectYear() {
-            assertEquals(2016, availableBook.getYear());
-        }
-
-        @Test
-        public void setYear_updatesYearCorrectly() {
-            availableBook.setYear(2023);
-            assertEquals(2023, availableBook.getYear());
+            assertAll(
+                    () -> assertEquals(year, book.getYear()),
+                    () -> assertEquals(bookId, book.getBookId())
+            );
         }
 
         @Test
