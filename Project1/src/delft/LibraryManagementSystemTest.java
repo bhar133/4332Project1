@@ -4,9 +4,9 @@ import org.junit.jupiter.api.*;
 
 import java.util.*;
 import java.util.stream.*;
-//import net.jqwik.api.*;
-//import net.jqwik.api.arbitraries.*;
-//import net.jqwik.api.constraints.*;
+import net.jqwik.api.*;
+import net.jqwik.api.arbitraries.*;
+import net.jqwik.api.constraints.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
@@ -117,42 +117,43 @@ public class LibraryManagementSystemTest {
         assertEquals("Duplicate", library.MemberIDs.get(102).Name);
     }
     //Library Class Property based testing
-//    @Provide
-//    Arbitrary<Book> books() {
-//        return Combinators.combine(
-//                Arbitraries.strings().alpha().ofMinLength(1).ofMaxLength(20),
-//                Arbitraries.strings().alpha().ofMinLength(1).ofMaxLength(20),
-//                Arbitraries.integers().between(1800, 2025),
-//                Arbitraries.strings().alpha().ofMinLength(5).ofMaxLength(10),
-//                Arbitraries.integers().between(1, 10000),
-//                Arbitraries.of("Fiction", "Nonfiction", "Sci-fi", "Mystery")
-//        ).as(Book::new);
-//    }
-//
-//    @Property
-//    void checkAddingBooksMakesThemAvailable(@ForAll("books") Book book) {
-//        Library lib = new Library();
-//        lib.addBook(book);
-//        assertTrue(lib.bookAvailability(book.BookID));
-//    }
-//
-//    @Property
-//    void checkoutThenReturnRestoresAvailability(@ForAll("books") Book book, @ForAll("memberIDs") int id) {
-//        Library lib = new Library();
-//        lib.addBook(book);
-//        Member m = new Member("X", "x@test.com", id);
-//        lib.addMember(m);
-//
-//        lib.checkoutBook(book.BookID, id);
-//        assertFalse(book.checkAvailability());
-//
-//        lib.returnBook(book.BookID, id);
-//        assertTrue(book.checkAvailability());
-//    }
-//
-//    @Provide
-//    Arbitrary<Integer> memberIDs() {
-//        return Arbitraries.integers().between(1000, 9999);
-//    }
+    //this will create a bunch of test books that I can use to test the functions handling checking in and out books
+    //and the availability of different books within the library system
+    @Provide
+    Arbitrary<Book> books() {
+        return Combinators.combine(
+                Arbitraries.strings().alpha().ofMinLength(1).ofMaxLength(20),
+                Arbitraries.strings().alpha().ofMinLength(1).ofMaxLength(20),
+                Arbitraries.integers().between(1800, 2025),
+                Arbitraries.strings().alpha().ofMinLength(5).ofMaxLength(10),
+                Arbitraries.integers().between(1, 10000),
+                Arbitraries.of("Fiction", "Nonfiction", "Sci-fi", "Mystery")
+        ).as(Book::new);
+    }
+
+    //This test will check the availability of all the books when they are added to the library.
+    //Will function correct if they are all set to true
+    @Property
+    void checkAddingBooksMakesThemAvailable(@ForAll("books") Book book) {
+        Library lib = new Library();
+        lib.addBook(book);
+        assertTrue(lib.bookAvailability(book.BookID));
+    }
+
+    //Testing when multiple books are checked out and then return the avaiability switches from, not available
+    //to available after each action/return
+    @Property
+    void checkoutThenReturnRestoresAvailability(@ForAll("books") Book book, @ForAll("memberIDs") int id) {
+        Library lib = new Library();
+        lib.addBook(book);
+        Member m = new Member("X", "x@test.com", id);
+        lib.addMember(m);
+
+        lib.checkoutBook(book.BookID, id);
+        assertFalse(book.checkAvailability());
+
+        lib.returnBook(book.BookID, id);
+        assertTrue(book.checkAvailability());
+    }
 
 }
