@@ -32,6 +32,11 @@ import java.util.Scanner;
 
 public class InterfaceTest {
 
+
+    /*
+     * test suite for user facing functionalities
+     */
+
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
     private final InputStream originalIn = System.in;
@@ -156,5 +161,109 @@ public class InterfaceTest {
         assertTrue(output.contains("Invalid main menu option."));
 
     }
+
+    // testing cli user input library options, ensuring the program is functioning as intended
+    // testing user input for availability and updating a book
+    /*
+     * simulated user flow
+     * 1 library options
+     * 1 add book
+     * book name
+     * author
+     * year
+     * isbn
+     * book id
+     * genre
+     * returns back to menu, select option 3 add member
+     * name
+     * email
+     * id
+     * goes back, checkout book option 5
+     * book id
+     * member id
+     * back to menu, 7 for book availability
+     * book id
+     * 0 main menu
+     * 4 exit
+     */
+
+    @Test
+    public void testLibraryOptionsCheckoutBook() {
+
+        String input = """
+                1
+                1
+                Real Name
+                Real Author
+                2025
+                1234
+                1
+                Non Fiction
+                3
+                Real Guy
+                realguy@email.com
+                10163
+                5
+                1
+                10163
+                7
+                1
+                0
+                4
+                """;
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        Interface.start();
+        String output = outContent.toString();
+        assertTrue(output.contains("Book checked out successfully."));
+        assertTrue(output.contains("Available: false"));
+        assertTrue(output.contains("Goodbye!"));
+
+
+    }
+
+
+    // testing user input for seeing a members borrowed book list
+    // starts by adding a member, adding a book, adding a book to a members borrowed book list
+    // then grabbing borrowed book list of selected member
+    // should return book id of 1
+
+    @Test
+    public void testMemberGetBorrowedBookList() {
+        String input = """
+                1
+                3
+                test user
+                test@email.com
+                10
+                0
+                1
+                1
+                the giver
+                some guy
+                2025
+                12345
+                1
+                sci fi
+                0
+                3
+                3
+                10
+                1
+                2
+                10
+                0
+                4
+                """;
+
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        Interface.start();
+        String output = outContent.toString();
+        assertTrue(output.contains("Borrowed Books: [1]"));
+    }
 }
+
+
+
 

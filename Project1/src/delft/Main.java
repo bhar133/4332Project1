@@ -16,9 +16,6 @@ public class Main {
         Interface.start();
     }
 }
-
-
-// Book class where you can see and access the book info
 class Book {
     String Name, Author, ISBN, Genre;
     int Year, BookID;
