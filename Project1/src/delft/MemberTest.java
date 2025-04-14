@@ -32,6 +32,9 @@ public class MemberTest {
         member = new Member("First Last", "first@email.com", 1);
     }
 
+    /*
+    * specification based testing
+     */
     // ensures the borrowed book system is correctly tracking
     @Test
     void testGetBorrowedBookList(){
@@ -89,6 +92,10 @@ public class MemberTest {
         assertEquals(dupeEmail, member.Email);
     }
 
+    /*
+    * bva testing here, ensuring the system can handle the addition and removal of a large
+    * number of books
+     */
     // tests the borrowing of large amounts of books with some removal
     @Test
     void testLargeNumberOfBorrowedBooks() {
@@ -104,6 +111,10 @@ public class MemberTest {
         assertEquals(64, member.getBorrowedBookList().size());
     }
 
+
+    /*
+    * property based testing
+     */
     // adding a book then removing it, should always return an empty list
     @Property
     void borrowedBookListShouldBeEmptyAfterAddAndRemove(
