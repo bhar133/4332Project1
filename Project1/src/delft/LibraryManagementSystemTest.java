@@ -116,6 +116,7 @@ public class LibraryManagementSystemTest {
         library.addMember(duplicateMember);
         assertEquals("Duplicate", library.MemberIDs.get(102).Name);
     }
+
     //Library Class Property based testing
     //this will create a bunch of test books that I can use to test the functions handling checking in and out books
     //and the availability of different books within the library system
