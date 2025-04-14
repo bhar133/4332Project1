@@ -221,6 +221,51 @@ public class InterfaceTest {
 
     }
 
+    // testing book updating functionality,ensuring proper program flow and
+    // that availability should not change when updating a book
+    // should return new book info
+    @Test
+    public void testBookOptionsUpdate() {
+        String input = """
+                1
+                3
+                test user
+                test@email.com
+                10
+                0
+                1
+                1
+                the giver
+                some guy
+                2025
+                12345
+                1
+                sci fi
+                0
+                2
+                2
+                1
+                the taker
+                the guy
+                2027
+                123456
+                non fiction
+                3
+                1
+                0
+                4
+                """;
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        Interface.start();
+        String output = outContent.toString();
+        assertTrue(output.contains("New Name:"));
+        assertTrue(output.contains("New Author:"));
+        assertTrue(output.contains("New Year:"));
+        assertTrue(output.contains("[1] the taker by the guy, 2027, Genre: non fiction (Available)"));
+        assertTrue(output.contains("Goodbye!"));
+
+    }
+
 
     // testing user input for seeing a members borrowed book list
     // starts by adding a member, adding a book, adding a book to a members borrowed book list
@@ -228,7 +273,7 @@ public class InterfaceTest {
     // should return book id of 1
 
     @Test
-    public void testMemberGetBorrowedBookList() {
+    public void testMemberOptionsGetBorrowedBookList() {
         String input = """
                 1
                 3
