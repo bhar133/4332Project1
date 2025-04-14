@@ -54,7 +54,7 @@ public class InterfaceTest {
 
     @Test
     public void testStart_DisplaysMainMenu() {
-        // Simulate user choosing to exit immediately (option 4)
+        // Test Main Menu appears as intended
         String input = "4\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
 
@@ -72,7 +72,7 @@ public class InterfaceTest {
 
     @Test
     public void testStart_SelectLibraryOption() {
-        // Simulate user choosing Library (1) then exiting
+        // Test all Library options appear when selected
         String input = "1\n0\n4\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
 
@@ -98,7 +98,7 @@ public class InterfaceTest {
 
     @Test
     public void testStart_SelectBookOption() {
-        // Simulate user choosing Book (2) then exiting
+        // Test all Book options appear when selected
         String input = "2\n0\n4\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
 
@@ -117,7 +117,7 @@ public class InterfaceTest {
 
     @Test
     public void testStart_SelectMemberOption() {
-        // Simulate user choosing Member (3) then exiting
+        // Test all Member options appear when selected
         String input = "3\n0\n4\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
 
@@ -138,7 +138,7 @@ public class InterfaceTest {
 
     @Test
     public void testStart_InvalidInput() {
-        // Simulate invalid input (non-number) then exit
+        // Test invalid non-integer inputs are rejected
         String input = "invalid\n4\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
 
@@ -151,7 +151,7 @@ public class InterfaceTest {
 
     @Test
     public void testStart_InvalidOptionNumber() {
-        // Simulate invalid option number (5) then exit
+        // Test invalid integers are regected 
         String input = "5\n4\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
 
