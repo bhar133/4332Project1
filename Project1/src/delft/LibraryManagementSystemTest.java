@@ -156,4 +156,10 @@ public class LibraryManagementSystemTest {
         assertTrue(book.checkAvailability());
     }
 
+    //Provide an jqwik interface to generate member ID's for property tests
+    @Provide
+    Arbitrary<Integer> memberIDs() {
+        return Arbitraries.integers().between(1000, 9999);
+    }
+
 }
