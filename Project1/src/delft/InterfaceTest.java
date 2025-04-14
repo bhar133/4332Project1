@@ -151,7 +151,7 @@ public class InterfaceTest {
 
     @Test
     public void testStart_InvalidOptionNumber() {
-        // Test invalid integers are regected 
+        // Test invalid integers are rejected
         String input = "5\n4\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
 
