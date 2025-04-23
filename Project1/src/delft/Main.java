@@ -92,12 +92,136 @@ class Member {
     }
 }
 
+// LibraryAccount class
+class LibraryAccount {
+    private double balance;
+    private Purchasing purchasing;
+
+    //setting the balance and constructing the purchasing
+    public LibraryAccount() {
+        this.balance = 39000.0;
+        this.purchasing = new Purchasing();
+    }
+
+    //returns balance of library
+    public double getBalance() {
+        return balance;
+    }
+
+    //adds money to library balance
+    public void deposit(double amount) {
+        if (amount > 0) balance += amount;
+    }
+
+    //the actual process withdrawing from library system when called
+    public boolean withdraw(double amount) {
+        if (amount > 0 && balance >= amount) {
+            balance -= amount;
+            return true;
+        }
+        return false;
+    }
+
+    //will purchase the book or return nothing because the library is out of funds
+    public boolean orderBook(Library library, Librarian librarian, Book book) {
+        double cost = purchasing.purchaseBook();
+        if (withdraw(cost)) {
+            library.addBook(book);
+            librarian.recordPurchase(book);
+            System.out.println("Book purchased for $" + cost + " and added to library.");
+            return true;
+        } else {
+            System.out.println("Insufficient funds to purchase book.");
+            return false;
+        }
+    }
+}
+
+// Purchasing class
+class Purchasing {
+    public double purchaseBook() {
+        Random rand = new Random();
+        return 10 + rand.nextInt(91); // $10 to $100
+    }
+}
+
+// Librarian class
+class Librarian {
+    private String name;
+    private String authCode;
+    private double totalWithdrawn;
+    private List<Book> purchasedBooks;
+
+    //creation of librarian to system
+    public Librarian(String name, String authCode) {
+        this.name = name;
+        this.authCode = authCode;
+        this.totalWithdrawn = 0.0;
+        this.purchasedBooks = new ArrayList<>();
+    }
+
+    //approves librarians login
+    public boolean authenticate(String inputCode) {
+        return this.authCode.equals(inputCode);
+    }
+
+    //returns name of librarian logged in
+    public String getName() {
+        return name;
+    }
+
+    //Will withdraw for specific librarian
+    public double getTotalWithdrawn() {
+        return totalWithdrawn;
+    }
+
+    //Will work with interface to withdraw salary
+    public void withdrawSalary(double amount, LibraryAccount account) {
+        if (account.withdraw(amount)) {
+            totalWithdrawn += amount;
+            System.out.println("$" + amount + " withdrawn as salary by " + name);
+        } else {
+            System.out.println("Insufficient funds for salary withdrawal.");
+        }
+    }
+
+    //records purchased books
+    public void recordPurchase(Book book) {
+        purchasedBooks.add(book);
+    }
+
+    //will show record of purchased books
+    public List<Book> getPurchasedBooks() {
+        return purchasedBooks;
+    }
+}
+
 // Library class where you can find the books and member access is
 class Library {
     Map<Integer, Book> AllBooksInLibrary = new HashMap<>();
     Map<Integer, Book> LoanedBooks = new HashMap<>();
     Map<Integer, Member> MemberIDs = new HashMap<>();
     Set<Integer> AvailableBookIds = new HashSet<>();
+    LibraryAccount account = new LibraryAccount();
+    List<Librarian> librarians = new ArrayList<>();
+
+    //Pre-defined librarians
+    public Library() {
+        librarians.add(new Librarian("Alice", "123456"));
+        librarians.add(new Librarian("Bob", "234567"));
+        librarians.add(new Librarian("Cathy", "345678"));
+    }
+
+    public LibraryAccount getAccount() {
+        return account;
+    }
+
+    public Librarian authenticateLibrarian(String authCode) {
+        for (Librarian lib : librarians) {
+            if (lib.authenticate(authCode)) return lib;
+        }
+        return null;
+    }
 
     // adds a book to the library
     public void addBook(Book b) {
