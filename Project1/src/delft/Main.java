@@ -98,9 +98,9 @@ class LibraryAccount {
     private Purchasing purchasing;
 
     //setting the balance and constructing the purchasing
-    public LibraryAccount() {
+    public LibraryAccount(Purchasing purchasing) {
         this.balance = 39000.0;
-        this.purchasing = new Purchasing();
+        this.purchasing = purchasing;
     }
 
     //returns balance of library
@@ -202,7 +202,8 @@ class Library {
     Map<Integer, Book> LoanedBooks = new HashMap<>();
     Map<Integer, Member> MemberIDs = new HashMap<>();
     Set<Integer> AvailableBookIds = new HashSet<>();
-    LibraryAccount account = new LibraryAccount();
+    Purchasing purchasing = new Purchasing();
+    LibraryAccount account = new LibraryAccount(purchasing);
     List<Librarian> librarians = new ArrayList<>();
 
     //Pre-defined librarians
