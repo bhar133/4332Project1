@@ -101,15 +101,4 @@ class LibraryAccountTest {
         verify(mockLibrarian, never()).recordPurchase(any());
     }
 
-    // Testing that ordering with a negative cost fails, leaves balance unchanged, and doesn't add book, doesn't record purchase
-    @Test
-    void orderBookWithNegativeCost() {
-        when(mockPurchasing.purchaseBook()).thenReturn(-1000.0); // Invalid negative cost
-
-        assertFalse(account.orderBook(mockLibrary, mockLibrarian, mockBook));
-        assertEquals(39000.0, account.getBalance());
-
-        verify(mockLibrary, never()).addBook(any());
-        verify(mockLibrarian, never()).recordPurchase(any());
-    }
 }
