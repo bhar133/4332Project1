@@ -148,49 +148,51 @@ class Purchasing {
 // Librarian class
 class Librarian {
     private String name;
-    private String authCode;
-    private double totalWithdrawn;
+    private int id;
+    private String password;
+    private boolean fullTime; // NEW: true if full-time, false if part-time
     private List<Book> purchasedBooks;
 
-    //creation of librarian to system
-    public Librarian(String name, String authCode) {
+    public Librarian(String name, int id, String password, boolean fullTime) {
         this.name = name;
-        this.authCode = authCode;
-        this.totalWithdrawn = 0.0;
+        this.id = id;
+        this.password = password;
+        this.fullTime = fullTime;
         this.purchasedBooks = new ArrayList<>();
     }
 
-    //approves librarians login
-    public boolean authenticate(String inputCode) {
-        return this.authCode.equals(inputCode);
-    }
-
-    //returns name of librarian logged in
     public String getName() {
         return name;
     }
 
-    //Will withdraw for specific librarian
-    public double getTotalWithdrawn() {
-        return totalWithdrawn;
+    public int getId() {
+        return id;
     }
 
-    //Will work with interface to withdraw salary
+    public boolean isFullTime() {
+        return fullTime;
+    }
+
+    public boolean authenticate(String inputPassword) {
+        return password.equals(inputPassword);
+    }
+
     public void withdrawSalary(double amount, LibraryAccount account) {
-        if (account.withdraw(amount)) {
-            totalWithdrawn += amount;
-            System.out.println("$" + amount + " withdrawn as salary by " + name);
+        if (fullTime) {
+            if (account.withdraw(amount)) {
+                System.out.println("Withdrew $" + amount + " from library account.");
+            } else {
+                System.out.println("Failed to withdraw. Insufficient funds.");
+            }
         } else {
-            System.out.println("Insufficient funds for salary withdrawal.");
+            System.out.println("Part-time librarians cannot withdraw salary.");
         }
     }
 
-    //records purchased books
     public void recordPurchase(Book book) {
         purchasedBooks.add(book);
     }
 
-    //will show record of purchased books
     public List<Book> getPurchasedBooks() {
         return purchasedBooks;
     }
@@ -208,18 +210,21 @@ class Library {
 
     //Pre-defined librarians
     public Library() {
-        librarians.add(new Librarian("Alice", "123456"));
-        librarians.add(new Librarian("Bob", "234567"));
-        librarians.add(new Librarian("Cathy", "345678"));
+        librarians.add(new Librarian("Alice", 123456, "alice123", true));
+        librarians.add(new Librarian("Bob", 234567, "bob234", true));
+        librarians.add(new Librarian("Cathy", 345678, "cathy345", true));
+        librarians.add(new Librarian("Seth", 456789, "seth456", false));
     }
 
     public LibraryAccount getAccount() {
         return account;
     }
 
-    public Librarian authenticateLibrarian(String authCode) {
+    public Librarian authenticateLibrarian(int id, String password) {
         for (Librarian lib : librarians) {
-            if (lib.authenticate(authCode)) return lib;
+            if (lib.getId() == id && lib.authenticate(password)) {
+                return lib;
+            }
         }
         return null;
     }
@@ -327,6 +332,10 @@ class Library {
         }
         return -1;
     }
+
+    public Book getBookById(int bookID) {
+        return AllBooksInLibrary.get(bookID);
+    }
 }
 
 // CLI for the library system
@@ -335,54 +344,191 @@ class Interface {
         Scanner scanner = new Scanner(System.in);
         Library library = new Library();
 
-        while (true) {
+        Librarian currentLibrarian = null;
+        while (currentLibrarian == null) {
+            System.out.println("\n--- Login as Librarian ---");
+
+            System.out.print("Librarian ID: ");
+            int id;
             try {
-                System.out.println("\n--- Main Menu ---");
-                System.out.println("1. Library");
-                System.out.println("2. Book");
-                System.out.println("3. Member");
-                System.out.println("4. Exit");
-                System.out.print("Select a category: ");
+                id = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid ID format. Please enter a 6-digit number.");
+                continue;
+            }
 
-                int mainChoice = scanner.nextInt();
-                scanner.nextLine();
+            System.out.print("Password: ");
+            String password = scanner.nextLine();
 
-                switch (mainChoice) {
-                    case 1: // library options
-                        handleLibraryOptions(scanner, library);
-                        break;
-                    case 2: // book options
-                        handleBookOptions(scanner, library);
-                        break;
-                    case 3: // member options
-                        handleMemberOptions(scanner, library);
-                        break;
-                    case 4: // exit
-                        System.out.println("Goodbye!");
-                        return;
-                    default:
-                        System.out.println("Invalid main menu option.");
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a valid number.");
-                scanner.nextLine();
+            currentLibrarian = library.authenticateLibrarian(id, password);
+            if (currentLibrarian == null) {
+                System.out.println("Authentication failed. Try again.");
+
+
+                System.out.println("\nLogin successful. Welcome, " + currentLibrarian.getName() + "!");
+            }
+        }
+
+        while (true) {
+            System.out.println("\n--- Main Menu ---");
+            System.out.println("1. Library");
+            System.out.println("2. Book");
+            System.out.println("3. Member");
+            System.out.println("4. Librarian Options");
+            System.out.println("5. Exit");
+            System.out.print("Select a category: ");
+
+            int mainChoice = getIntInput(scanner);
+
+            switch (mainChoice) {
+                case 1:
+                    handleLibraryOptions(scanner, library);
+                    break;
+                case 2:
+                    handleBookOptions(scanner, library);
+                    break;
+                case 3:
+                    handleMemberOptions(scanner, library);
+                    break;
+                case 4:
+                    handleLibrarianOptions(scanner, library, currentLibrarian);
+                    break;
+                case 5:
+                    System.out.println("Exiting... Goodbye!");
+                    return;
+                default:
+                    System.out.println("Invalid menu option.");
             }
         }
     }
 
+    private static void handleLibrarianOptions(Scanner scanner, Library library, Librarian librarian) {
+            while (true) {
+                System.out.println("\n--- Library Options ---");
+                System.out.println("1. Remove Book");
+                System.out.println("2. Add Member");
+                System.out.println("3. Revoke Membership");
+                System.out.println("4. Checkout Book");
+                System.out.println("5. Return Book");
+                System.out.println("6. Check Book Availability");
+                System.out.println("7. Who Has Book");
+                System.out.println("8. Get All Members");
+                System.out.println("9. Find Book ID by Name");
+                System.out.println("0. Return to Main Menu");
+                System.out.print("Select an option: ");
+
+                int libChoice = getIntInput(scanner);
+
+                switch (libChoice) {
+                    case 0:
+                        return;
+                    case 1:
+                        if (!librarian.isFullTime()) {
+                            System.out.println("Permission denied.");
+                            break;
+                        }
+                        System.out.print("Enter Book ID to remove: ");
+                        library.removeBook(Integer.parseInt(scanner.nextLine()));
+                        break;
+                    case 2:
+                        System.out.print("Member name: ");
+                        String memberName = scanner.nextLine();
+                        System.out.print("Email: ");
+                        String email = scanner.nextLine();
+                        System.out.print("Member ID: ");
+                        int memberID = Integer.parseInt(scanner.nextLine());
+                        library.addMember(new Member(memberName, email, memberID));
+                        break;
+                    case 3:
+                        if (!librarian.isFullTime()) {
+                            System.out.println("Only full-time librarians can revoke memberships.");
+                            break;
+                        }
+                        System.out.print("Enter Member ID to revoke: ");
+                        library.revokeMembership(Integer.parseInt(scanner.nextLine()));
+                        break;
+                    case 4:
+                        System.out.print("Book ID to checkout: ");
+                        int checkoutBookID = Integer.parseInt(scanner.nextLine());
+                        System.out.print("Member ID: ");
+                        int checkoutMemberID = Integer.parseInt(scanner.nextLine());
+                        Book book = library.getBookById(checkoutBookID);
+                        if (book == null) {
+                            if (librarian.isFullTime()) {
+                                System.out.println("Book not found in library. Would you like to purchase and proceed with checkout? (yes/no)");
+                                if (scanner.nextLine().equalsIgnoreCase("yes")) {
+                                    System.out.print("Book name: ");
+                                    String name = scanner.nextLine();
+                                    System.out.print("Author: ");
+                                    String author = scanner.nextLine();
+                                    System.out.print("Year: ");
+                                    int year = Integer.parseInt(scanner.nextLine());
+                                    System.out.print("ISBN: ");
+                                    String isbn = scanner.nextLine();
+                                    System.out.print("Genre: ");
+                                    String genre = scanner.nextLine();
+                                    book = new Book(name, author, year, isbn, checkoutBookID, genre);
+                                    if (library.getAccount().orderBook(library, librarian, book)) {
+                                        library.addBook(book);
+                                        System.out.println("Book purchased and added.");
+                                    } else {
+                                        System.out.println("Purchase failed.");
+                                        break;
+                                    }
+                                } else {
+                                    System.out.println("Checkout cancelled.");
+                                    break;
+                                }
+                            } else {
+                                System.out.println("Please request a full-time librarian to approve the purchase.");
+                                break;
+                            }
+                        }
+                        library.checkoutBook(checkoutBookID, checkoutMemberID);
+                        break;
+                    case 5:
+                        System.out.print("Book ID to return: ");
+                        int returnBookID = Integer.parseInt(scanner.nextLine());
+                        System.out.print("Member ID: ");
+                        int checkinMemberID = Integer.parseInt(scanner.nextLine());
+                        library.returnBook(returnBookID, checkinMemberID);
+                        break;
+                    case 6:
+                        System.out.print("Enter Book ID to check availability: ");
+                        System.out.println("Available: " + library.bookAvailability(Integer.parseInt(scanner.nextLine())));
+                        break;
+                    case 7:
+                        System.out.print("Enter Book ID to check who has it: ");
+                        System.out.println("Checked out by: " + library.whoHasBook(Integer.parseInt(scanner.nextLine())));
+                        break;
+                    case 8:
+                        for (Member m : library.getAllMembers()) {
+                            m.printMemberInfo();
+                        }
+                        break;
+                    case 9:
+                        System.out.print("Enter Book Name: ");
+                        System.out.println("Book ID: " + library.findBookIdByName(scanner.nextLine()));
+                        break;
+                    default:
+                        System.out.println("Invalid option.");
+                }
+            }
+    }
+
+    // --- helper submenus (same as in second interface) ---
     private static void handleLibraryOptions(Scanner scanner, Library library) {
         while (true) {
             System.out.println("\n--- Library Options ---");
-            System.out.println("1. Add Book");
-            System.out.println("2. Remove Book");
-            System.out.println("3. Add Member");
-            System.out.println("4. Revoke Membership");
-            System.out.println("5. Checkout Book");
-            System.out.println("6. Return Book");
-            System.out.println("7. Check Book Availability");
-            System.out.println("8. Who Has Book");
-            System.out.println("9. Get All Members");
-            System.out.println("10. Find Book ID by Name");
+            System.out.println("1. Remove Book");
+            System.out.println("2. Add Member");
+            System.out.println("3. Revoke Membership");
+            System.out.println("4. Checkout Book");
+            System.out.println("5. Return Book");
+            System.out.println("6. Check Book Availability");
+            System.out.println("7. Who Has Book");
+            System.out.println("8. Get All Members");
+            System.out.println("9. Find Book ID by Name");
             System.out.println("0. Return to Main Menu");
             System.out.print("Select an option: ");
 
@@ -394,29 +540,12 @@ class Interface {
             }
 
             switch (libChoice) {
-                case 1: // add book
-                    System.out.print("Book name: ");
-                    String name = scanner.nextLine();
-                    System.out.print("Author: ");
-                    String author = scanner.nextLine();
-                    System.out.print("Year: ");
-                    int year = scanner.nextInt();
-                    scanner.nextLine();
-                    System.out.print("ISBN: ");
-                    String isbn = scanner.nextLine();
-                    System.out.print("Book ID: ");
-                    int bookID = Integer.parseInt(scanner.nextLine());
-                    System.out.print("Genre: ");
-                    String genre = scanner.nextLine();
-                    Book book = new Book(name, author, year, isbn, bookID, genre);
-                    library.addBook(book);
-                    break;
-                case 2: // remove book
+                case 1: // remove book
                     System.out.print("Enter Book ID to remove: ");
                     int removeID = Integer.parseInt(scanner.nextLine());
                     library.removeBook(removeID);
                     break;
-                case 3: // add member
+                case 2: // add member
                     System.out.print("Member name: ");
                     String memberName = scanner.nextLine();
                     System.out.print("Email: ");
@@ -434,42 +563,42 @@ class Interface {
                     Member newMember = new Member(memberName, email, memberID);
                     library.addMember(newMember);
                     break;
-                case 4: // revoke membership
+                case 3: // revoke membership
                     System.out.print("Enter Member ID to revoke: ");
                     int revokeID = Integer.parseInt(scanner.nextLine());
                     library.revokeMembership(revokeID);
                     break;
-                case 5: // checkout book
+                case 4: // checkout book
                     System.out.print("Book ID to checkout: ");
                     int checkoutBookID = Integer.parseInt(scanner.nextLine());
                     System.out.print("Member ID: ");
                     int checkoutMemberID = Integer.parseInt(scanner.nextLine());
                     library.checkoutBook(checkoutBookID, checkoutMemberID);
                     break;
-                case 6: // return book
+                case 5: // return book
                     System.out.print("Book ID to return: ");
                     int returnBookID = Integer.parseInt(scanner.nextLine());
                     System.out.print("Member ID: ");
                     int checkinMemberID = Integer.parseInt(scanner.nextLine());
                     library.returnBook(returnBookID, checkinMemberID);
                     break;
-                case 7: // check book availability
+                case 6: // check book availability
                     System.out.print("Enter Book ID to check availability: ");
                     int availID = Integer.parseInt(scanner.nextLine());
                     System.out.println("Available: " + library.bookAvailability(availID));
                     break;
-                case 8: // who has book
+                case 7: // who has book
                     System.out.print("Enter Book ID to check who has it: ");
                     int whoID = Integer.parseInt(scanner.nextLine());
                     System.out.println("Checked out by: " + library.whoHasBook(whoID));
                     break;
-                case 9: // get all members
+                case 8: // get all members
                     System.out.println("All Members: ");
                     for (Member m : library.getAllMembers()) {
                         m.printMemberInfo();
                     }
                     break;
-                case 10: // find book ID by name
+                case 9: // find book ID by name
                     System.out.print("Enter Book Name: ");
                     String bookName = scanner.nextLine();
                     System.out.println("Book ID: " + library.findBookIdByName(bookName));
@@ -600,4 +729,26 @@ class Interface {
             }
         }
     }
+
+    // --- helper input methods ---
+    private static int getIntInput(Scanner scanner) {
+        while (true) {
+            try {
+                return Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.print("Invalid number. Try again: ");
+            }
+        }
+    }
+
+    private static double getDoubleInput(Scanner scanner) {
+        while (true) {
+            try {
+                return Double.parseDouble(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.print("Invalid amount. Try again: ");
+            }
+        }
+    }
 }
+
