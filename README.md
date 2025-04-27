@@ -1,5 +1,5 @@
 # 4332Project1
-4332 Project 1 - delft.Library delft.Interface
+4332 Project - delft.Library delft.Interface
 
 This code will run in the command line. 
 
