@@ -5,7 +5,7 @@ This code will run in the command line.
 
 You will the see a series of messages, most importantly you will see this:
 
---- Login as Librarian ---
+--- Login as Librarian --- <br>
 Librarian ID: 
 
 where once you put in a valid ID you will see the prompt:
@@ -25,7 +25,7 @@ Name: Seth  ID 456789  Password: seth456
 When you successfully log into the system, you will see options appear.
 With these options, you use the corresponding buttons to select the options.
 EX: 
-# --- Main Menu ---
+--- Main Menu ---<br>
 1. Book Options
 2. Member Options
 3. Librarian Options
