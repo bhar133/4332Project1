@@ -314,6 +314,7 @@ class Interface {
             System.out.println("2. Withdraw Salary");
             System.out.println("3. View Total Withdrawn Salaries");
             System.out.println("4. View Books Purchased by Librarian");
+            System.out.println("5. View Library Balance");
             System.out.println("0. Return to Main Menu");
             System.out.print("Select an option: ");
 
@@ -346,6 +347,7 @@ class Interface {
                         System.out.println(book.getBookInfo());
                     }
                 }
+                case 5 -> System.out.printf("Current library balance: $%.2f\n", library.getAccount().getBalance());
                 default -> System.out.println("Invalid option.");
             }
         }
