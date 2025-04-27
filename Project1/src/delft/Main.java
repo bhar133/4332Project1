@@ -365,6 +365,7 @@ class Interface {
 
         Librarian currentLibrarian = null;
         while (currentLibrarian == null) {
+            System.out.println("\n-- Welcome to the Library of Your Dreams by Brice Tillman, ");
             System.out.println("\n--- Login as Librarian ---");
             System.out.print("Librarian ID: ");
             int id = getIntInput(scanner);
