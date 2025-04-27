@@ -19,7 +19,7 @@ Here is a list of the Full Time Librarians in the System:
 2. Name: Bob  ID:234567  Password: bob234
 3. Name: Cathy  ID: 345678  Password: cathy345<br>
 
-To test the limited options for a part-time librarian you can log into this account:
+To test the limited options for a part-time librarian you can log into this account: <br>
 Name: Seth  ID 456789  Password: seth456
 
 When you successfully log into the system, you will see options appear.
