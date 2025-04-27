@@ -24,7 +24,7 @@ Name: Seth  ID 456789  Password: seth456
 
 When you successfully log into the system, you will see options appear.
 With these options, you use the corresponding buttons to select the options.
-EX: 
+EX: <br>
 --- Main Menu ---<br>
 1. Book Options
 2. Member Options
